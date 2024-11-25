@@ -188,8 +188,8 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
     super.initState();
     currentLevel = widget.initialLevel;
     _initializeLevel();
-    MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
-        testDeviceIds: testDeviceIds));
+    MobileAds.instance.updateRequestConfiguration(
+        RequestConfiguration(testDeviceIds: testDeviceIds));
     createRewardedInterstitialAd();
   }
 
@@ -253,6 +253,35 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
       }
     }
     return count;
+  }
+
+  void _revealRandomMine() {
+    if (isGameOver) return;
+
+    // Find all hidden mines
+    List<Cell> hiddenMines = [];
+    for (var row in grid) {
+      for (var cell in row) {
+        if (cell.isMine && !cell.isRevealed) {
+          hiddenMines.add(cell);
+        }
+      }
+    }
+
+    if (hiddenMines.isNotEmpty) {
+      // Randomly select one mine
+      Cell randomMine = hiddenMines[Random().nextInt(hiddenMines.length)];
+
+      setState(() {
+        randomMine.isRevealed = true;
+        revealedCount++;
+
+        // Check if the game is over (win condition)
+        if (revealedCount == rows * cols - mineCount) {
+          _gameOver(true);
+        }
+      });
+    }
   }
 
   void _revealCell(int row, int col) {
@@ -362,10 +391,20 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
                   Row(
                     children: [
                       InkWell(
-                          child: Icon(Icons.movie),
-                          onTap: () {
-                            showRewardedInterstitialAd();
-                          })
+                        child: const Icon(Icons.movie),
+                        onTap: () {
+                          if (rewardedInterstitialAd != null) {
+                            rewardedInterstitialAd!.show(
+                              onUserEarnedReward:
+                                  (AdWithoutView ad, RewardItem reward) {
+                                _revealRandomMine(); // Reveal a mine when the reward is earned
+                              },
+                            );
+                          } else {
+                            print('Ad not ready yet');
+                          }
+                        },
+                      ),
                     ],
                   ),
                   Row(
