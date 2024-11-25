@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 final List<String> testDeviceIds = [
-  "a32c5b41-837a-4ccb-a49f-85a7f10ddb8a",//zaman
-  "154dc959-1866-4f8a-8585-32c2c0f556a0",//nafiz emulator
+  "a32c5b41-837a-4ccb-a49f-85a7f10ddb8a", //zaman
+  "154dc959-1866-4f8a-8585-32c2c0f556a0", //nafiz emulator
 ];
 
 const int maxFailedLoadAttempts = 3;
