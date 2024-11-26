@@ -182,6 +182,7 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
   late int rows;
   late int cols;
   late int mineCount;
+  int lives = 3; // Start with 3 lives
 
   @override
   void initState() {
@@ -294,7 +295,10 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
       revealedCount++;
 
       if (grid[row][col].isMine) {
-        _gameOver(false);
+        lives--; // Decrease a life
+        if (lives <= 0) {
+          _gameOver(false); // End game if lives are 0
+        }
       } else if (grid[row][col].adjacentMines == 0) {
         _revealAdjacentCells(row, col);
       }
@@ -423,6 +427,15 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
                       ),
                     ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      lives,
+                      (index) =>
+                          Icon(Icons.favorite, color: Colors.red, size: 30),
+                    ),
+                  ),
+                  SizedBox(height: 16), // Add spacing
                 ],
               ),
             ),
