@@ -67,11 +67,52 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[800],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    'Challenge Yourself!',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: Column(
+                  children: [
+                    LinearProgressIndicator(
+                      value: highestCompletedLevel /
+                          50, // Example: 50 total levels
+                      backgroundColor: Colors.grey[300],
+                      color: Colors.blue,
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      '${highestCompletedLevel} / 50 Levels Completed',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.blue[800],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Expanded(
                 child: GridView.builder(
                   padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 5,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount:
+                        MediaQuery.of(context).size.width > 600 ? 6 : 4,
                     childAspectRatio: 1,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
@@ -82,6 +123,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                     final isUnlocked = level <= highestCompletedLevel + 1;
                     return LevelButton(
                       level: level,
+                      highestCompletedLevel:
+                          highestCompletedLevel, // Pass the value dynamically
                       isUnlocked: isUnlocked,
                       onPressed: isUnlocked
                           ? () {
@@ -115,47 +158,66 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   }
 }
 
+// Widget definition for LevelButton
 class LevelButton extends StatelessWidget {
   final int level;
+  final int highestCompletedLevel;
   final bool isUnlocked;
   final VoidCallback? onPressed;
 
   const LevelButton({
     Key? key,
     required this.level,
+    required this.highestCompletedLevel,
     required this.isUnlocked,
     this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: isUnlocked ? 4 : 0,
-      borderRadius: BorderRadius.circular(12),
-      color: isUnlocked ? Colors.white : Colors.grey[300],
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          decoration: BoxDecoration(
+    return Stack(
+      children: [
+        Material(
+          elevation: isUnlocked ? 4 : 0,
+          borderRadius: BorderRadius.circular(12),
+          color: isUnlocked ? Colors.white : Colors.grey[300],
+          child: InkWell(
+            onTap: onPressed ?? () {},
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isUnlocked ? Colors.blue : Colors.grey,
-              width: 2,
-            ),
-          ),
-          child: Center(
-            child: Text(
-              '$level',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: isUnlocked ? Colors.blue[700] : Colors.grey[600],
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isUnlocked ? Colors.blue : Colors.grey,
+                  width: 2,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  '$level',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: isUnlocked ? Colors.blue[700] : Colors.grey[600],
+                  ),
+                ),
               ),
             ),
           ),
         ),
-      ),
+        if (level <= highestCompletedLevel)
+          Positioned(
+            top: 8,
+            left: 8,
+            child: Icon(Icons.check_circle, color: Colors.green, size: 18),
+          ),
+        if (level == highestCompletedLevel + 1)
+          Positioned(
+            bottom: 8,
+            right: 8,
+            child: Icon(Icons.star, color: Colors.orange, size: 18),
+          ),
+      ],
     );
   }
 }
@@ -195,6 +257,8 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
   }
 
   void _initializeLevel() {
+    lives = 3; // Reset lives
+    isGameOver = false; // Reset game over state
     rows = 8 + (currentLevel ~/ 2);
     cols = 8 + (currentLevel ~/ 2);
     mineCount = 10 + currentLevel;
@@ -362,13 +426,11 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
               child:
                   Text(isWin && currentLevel < 50 ? 'Next Level' : 'Try Again'),
               onPressed: () {
-                Navigator.of(context).pop();
                 setState(() {
-                  if (isWin && currentLevel < 50) {
-                    currentLevel++;
-                  }
-                  _initializeLevel();
+                  lives = 3; // Reset lives
+                  _initializeLevel(); // Reinitialize the level
                 });
+                Navigator.of(context).pop(); // Close the dialog after resetting
               },
             ),
           ],
@@ -551,4 +613,19 @@ class CellWidget extends StatelessWidget {
         return Colors.black;
     }
   }
+}
+
+// Define the customLevelButton only once and use constant or null default values
+
+Widget customLevelButton({
+  required int level,
+  required int highestCompletedLevel,
+  required bool isUnlocked,
+  VoidCallback?
+      onPressed, // Use `VoidCallback?` to allow null as a valid default
+}) {
+  return ElevatedButton(
+    onPressed: onPressed,
+    child: Text('Level $level'),
+  );
 }
