@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:minesweeper/admob.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,13 +39,29 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   int highestCompletedLevel = 0;
 
   @override
+  void initState() {
+    super.initState();
+    _loadProgress(); // Load the saved progress on startup
+  }
+
+  // Load progress from shared preferences
+  _loadProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      highestCompletedLevel = prefs.getInt('highestCompletedLevel') ?? 0;
+    });
+  }
+
+  // Save progress to shared preferences
+  _saveProgress(int level) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('highestCompletedLevel', level);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Minesweeper Levels'),
-        centerTitle: true,
-        elevation: 0,
-      ),
+      // No AppBar
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -138,6 +155,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                                             highestCompletedLevel) {
                                           highestCompletedLevel =
                                               completedLevel;
+                                          _saveProgress(
+                                              highestCompletedLevel); // Save progress when level is completed
                                         }
                                       });
                                     },
@@ -403,11 +422,12 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
     String message = isWin ? 'You Win!' : 'Game Over!';
 
     if (isWin) {
-      widget.onLevelComplete(currentLevel);
+      widget.onLevelComplete(currentLevel); // Notify level completion
     }
 
     showDialog(
       context: context,
+      barrierDismissible: false, // Prevent dialog dismissal on tapping outside
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(message),
@@ -442,10 +462,7 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Minesweeper - Level $currentLevel'),
-        centerTitle: true,
-      ),
+      // No AppBar
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -504,31 +521,28 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
             Flexible(
               child: AspectRatio(
                 aspectRatio: 1,
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.9,
-                    maxHeight: MediaQuery.of(context).size.height * 0.7,
-                  ),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: cols,
-                      childAspectRatio: 1,
-                      crossAxisSpacing: 2,
-                      mainAxisSpacing: 2,
-                    ),
-                    itemBuilder: (context, index) {
-                      int row = index ~/ cols;
-                      int col = index % cols;
-                      return GestureDetector(
-                        onTap: () => _revealCell(row, col),
-                        onLongPress: () => _toggleFlag(row, col),
-                        child: CellWidget(cell: grid[row][col]),
-                      );
-                    },
-                    itemCount: rows * cols,
-                  ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return GridView.builder(
+                      padding: EdgeInsets.zero,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: cols,
+                        crossAxisSpacing: 2,
+                        mainAxisSpacing: 2,
+                        childAspectRatio: constraints.maxWidth / constraints.maxHeight,
+                      ),
+                      itemCount: rows * cols,
+                      itemBuilder: (context, index) {
+                        int row = index ~/ cols;
+                        int col = index % cols;
+                        return GestureDetector(
+                          onTap: () => _revealCell(row, col),
+                          onLongPress: () => _toggleFlag(row, col),
+                          child: CellWidget(cell: grid[row][col]),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ),
@@ -622,7 +636,7 @@ Widget customLevelButton({
   required int highestCompletedLevel,
   required bool isUnlocked,
   VoidCallback?
-      onPressed, // Use `VoidCallback?` to allow null as a valid default
+      onPressed, // Use VoidCallback? to allow null as a valid default
 }) {
   return ElevatedButton(
     onPressed: onPressed,
