@@ -67,7 +67,10 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue[100]!, Colors.blue[50]!],
+            colors: [
+              const Color.fromARGB(255, 143, 139, 139)!,
+              const Color.fromARGB(255, 184, 184, 184)!
+            ],
           ),
         ),
         child: SafeArea(
@@ -80,7 +83,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue[800],
+                    color: const Color.fromARGB(255, 43, 43, 43),
                   ),
                 ),
               ),
@@ -89,7 +92,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.blue[800],
+                    color: const Color.fromARGB(255, 56, 56, 56),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -111,14 +114,14 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                       value: highestCompletedLevel /
                           50, // Example: 50 total levels
                       backgroundColor: Colors.grey[300],
-                      color: Colors.blue,
+                      color: const Color.fromARGB(255, 31, 31, 31),
                     ),
                     SizedBox(height: 4),
                     Text(
                       '${highestCompletedLevel} / 50 Levels Completed',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.blue[800],
+                        color: const Color.fromARGB(255, 27, 27, 27),
                       ),
                     ),
                   ],
@@ -207,7 +210,7 @@ class LevelButton extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: isUnlocked ? Colors.blue : Colors.grey,
+                  color: isUnlocked ? Colors.black : Colors.grey,
                   width: 2,
                 ),
               ),
@@ -217,7 +220,9 @@ class LevelButton extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: isUnlocked ? Colors.blue[700] : Colors.grey[600],
+                    color: isUnlocked
+                        ? const Color.fromARGB(255, 66, 66, 66)
+                        : Colors.grey[600],
                   ),
                 ),
               ),
@@ -529,7 +534,8 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
                         crossAxisCount: cols,
                         crossAxisSpacing: 2,
                         mainAxisSpacing: 2,
-                        childAspectRatio: constraints.maxWidth / constraints.maxHeight,
+                        childAspectRatio:
+                            constraints.maxWidth / constraints.maxHeight,
                       ),
                       itemCount: rows * cols,
                       itemBuilder: (context, index) {
@@ -635,8 +641,7 @@ Widget customLevelButton({
   required int level,
   required int highestCompletedLevel,
   required bool isUnlocked,
-  VoidCallback?
-      onPressed, // Use VoidCallback? to allow null as a valid default
+  VoidCallback? onPressed, // Use VoidCallback? to allow null as a valid default
 }) {
   return ElevatedButton(
     onPressed: onPressed,
