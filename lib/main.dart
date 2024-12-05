@@ -476,15 +476,15 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Column(
                 children: [
+                  // Add the button with a label and a clear icon
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      InkWell(
-                        child: const Icon(Icons.movie),
-                        onTap: () {
+                      ElevatedButton.icon(
+                        onPressed: () {
                           if (rewardedInterstitialAd != null) {
                             rewardedInterstitialAd!.show(
-                              onUserEarnedReward:
-                                  (AdWithoutView ad, RewardItem reward) {
+                              onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
                                 _revealRandomMine(); // Reveal a mine when the reward is earned
                               },
                             );
@@ -492,22 +492,34 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
                             print('Ad not ready yet');
                           }
                         },
+                        icon: Icon(Icons.movie, color: Colors.white), // Icon for movie/reward
+                        label: Text(
+                          'Watch Ad for Reward',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange, // Set button color
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                       ),
                     ],
                   ),
+                  SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         'Mines: $mineCount',
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(width: 20),
                       Text(
                         'Grid: ${rows}x$cols',
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -515,8 +527,7 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       lives,
-                      (index) =>
-                          Icon(Icons.favorite, color: Colors.red, size: 30),
+                      (index) => Icon(Icons.favorite, color: Colors.red, size: 30),
                     ),
                   ),
                   SizedBox(height: 16), // Add spacing
