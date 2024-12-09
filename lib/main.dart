@@ -11,7 +11,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +29,13 @@ class MyApp extends StatelessWidget {
 }
 
 class LevelSelectionScreen extends StatefulWidget {
-  const LevelSelectionScreen({Key? key}) : super(key: key);
+  const LevelSelectionScreen({super.key});
 
   @override
-  _LevelSelectionScreenState createState() => _LevelSelectionScreenState();
+  LevelSelectionScreenState createState() => LevelSelectionScreenState();
 }
 
-class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
+class LevelSelectionScreenState extends State<LevelSelectionScreen> {
   int highestCompletedLevel = 0;
 
   @override
@@ -68,8 +68,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color.fromARGB(255, 143, 139, 139)!,
-              const Color.fromARGB(255, 184, 184, 184)!
+              const Color.fromARGB(255, 143, 139, 139),
+              const Color.fromARGB(255, 184, 184, 184)
             ],
           ),
         ),
@@ -118,7 +118,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      '${highestCompletedLevel} / 50 Levels Completed',
+                      '$highestCompletedLevel / 50 Levels Completed',
                       style: TextStyle(
                         fontSize: 14,
                         color: const Color.fromARGB(255, 27, 27, 27),
@@ -188,12 +188,12 @@ class LevelButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const LevelButton({
-    Key? key,
+    super.key,
     required this.level,
     required this.highestCompletedLevel,
     required this.isUnlocked,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -251,16 +251,16 @@ class MinesweeperGame extends StatefulWidget {
   final Function(int) onLevelComplete;
 
   const MinesweeperGame({
-    Key? key,
+    super.key,
     required this.initialLevel,
     required this.onLevelComplete,
-  }) : super(key: key);
+  });
 
   @override
-  _MinesweeperGameState createState() => _MinesweeperGameState();
+  MinesweeperGameState createState() => MinesweeperGameState();
 }
 
-class _MinesweeperGameState extends State<MinesweeperGame> {
+class MinesweeperGameState extends State<MinesweeperGame> {
   late List<List<Cell>> grid;
   bool isGameOver = false;
   int revealedCount = 0;
@@ -588,7 +588,7 @@ class Cell {
 class CellWidget extends StatelessWidget {
   final Cell cell;
 
-  const CellWidget({Key? key, required this.cell}) : super(key: key);
+  const CellWidget({super.key, required this.cell});
 
   @override
   Widget build(BuildContext context) {
