@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Minesweeper',
+      title: 'Mine Sweeper',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.grey[200],
@@ -484,7 +484,8 @@ class MinesweeperGameState extends State<MinesweeperGame> {
                         onPressed: () {
                           if (rewardedInterstitialAd != null) {
                             rewardedInterstitialAd!.show(
-                              onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
+                              onUserEarnedReward:
+                                  (AdWithoutView ad, RewardItem reward) {
                                 _revealRandomMine(); // Reveal a mine when the reward is earned
                               },
                             );
@@ -492,7 +493,8 @@ class MinesweeperGameState extends State<MinesweeperGame> {
                             print('Ad not ready yet');
                           }
                         },
-                        icon: Icon(Icons.movie, color: Colors.white), // Icon for movie/reward
+                        icon: Icon(Icons.movie,
+                            color: Colors.white), // Icon for movie/reward
                         label: Text(
                           'Watch Ad for Reward',
                           style: TextStyle(color: Colors.white),
@@ -500,7 +502,8 @@ class MinesweeperGameState extends State<MinesweeperGame> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // Set button color
                           foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 20),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -514,12 +517,14 @@ class MinesweeperGameState extends State<MinesweeperGame> {
                     children: [
                       Text(
                         'Mines: $mineCount',
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(width: 20),
                       Text(
                         'Grid: ${rows}x$cols',
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -527,7 +532,8 @@ class MinesweeperGameState extends State<MinesweeperGame> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       lives,
-                      (index) => Icon(Icons.favorite, color: Colors.red, size: 30),
+                      (index) =>
+                          Icon(Icons.favorite, color: Colors.red, size: 30),
                     ),
                   ),
                   SizedBox(height: 16), // Add spacing
